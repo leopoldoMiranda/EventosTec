@@ -12,7 +12,7 @@ namespace EventosTec.Web.Models.Entities
         public int Id { get; set; }
 
         [Required]
-        [Display(Name = "Nombre")]
+        [Display(Name = "Categoria")]
         public string Name { get; set; }
 
         [Display(Name = "Descripcion")]
