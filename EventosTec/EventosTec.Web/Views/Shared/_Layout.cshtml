@@ -38,6 +38,26 @@
                     <li><a asp-area="" asp-controller="Categories" asp-action="Index">Categorias</a></li>
                     <li><a asp-area="" asp-controller="Events" asp-action="Index">Eventos</a></li>
 
+
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                    {
+
+                        <li><a asp-area="" asp-controller="Clients" asp-action="Index">Clientes</a></li>
+                    }
+
+
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li><a asp-area="" asp-controller="Account" asp-action="ChangeUser">@User.Identity.Name</a></li>
+                        <li><a asp-area="" asp-controller="Account" asp-action="Logout">Logout</a></li>
+                    }
+                    else
+                    {
+                        <li><a asp-area="" asp-controller="Account" asp-action="Login">Login</a></li>
+                    }
                 </ul>
             </div>
         </div>
