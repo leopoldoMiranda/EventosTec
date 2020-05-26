@@ -18,5 +18,7 @@ namespace EventosTec.Web.Models.Entities
         [Display(Name = "Descripcion")]
         [MaxLength(200)]
         public string Descripcion { get; set; }
+
+        public ICollection<Event> Events { get; set; }//AGREGADO
     }
 }

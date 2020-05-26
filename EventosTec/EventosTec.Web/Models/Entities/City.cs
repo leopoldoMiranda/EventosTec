@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,5 +20,7 @@ namespace EventosTec.Web.Models.Entities
 
         [Display(Name="Pais")]
         public string  Slung { get; set; }
+
+        public ICollection<Event> Events { get; set; }
     }
 }

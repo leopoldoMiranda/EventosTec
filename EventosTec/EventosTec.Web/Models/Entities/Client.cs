@@ -63,7 +63,7 @@ namespace EventosTec.Web.Models.Entities
         public string Address { get; set; }
         public User User { get; set; }
 
-
+        public ICollection<Event> Events { get; set; }
 
     }
 }

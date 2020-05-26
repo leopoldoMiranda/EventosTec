@@ -36,13 +36,14 @@ namespace EventosTec.Web.Models.Entities
 
         [ForeignKey("CityId")]
         public City City { get; set; }
+
+        public int ClientId { get; set; } //AGREGADO
+        [ForeignKey("ClientId")] //AGREGADO
 //-------------------------------------------------
         [Required]
         public int CategoryId { get; set; }
 
         [ForeignKey("CategoryId")]
         public Category Category { get; set; }
-
-    
     }
 }
