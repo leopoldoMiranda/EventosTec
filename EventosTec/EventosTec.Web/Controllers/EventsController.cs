@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EventosTec.Web.Models;
 using EventosTec.Web.Models.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EventosTec.Web.Controllers
 {
+    [Authorize]
     public class EventsController : Controller
     {
         private readonly DataDbContext _context;
@@ -22,7 +24,8 @@ namespace EventosTec.Web.Controllers
         // GET: Events
         public async Task<IActionResult> Index()
         {
-            var dataDbContext = _context.Events.Include(a => a.Category).Include(a => a.City);
+
+            var dataDbContext = _context.Events.Include(a => @a.City);
             return View(await dataDbContext.ToListAsync());
         }
 
@@ -35,7 +38,6 @@ namespace EventosTec.Web.Controllers
             }
 
             var @event = await _context.Events
-                .Include(a => a.Category)
                 .Include(a => a.City)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (@event == null)
@@ -49,17 +51,29 @@ namespace EventosTec.Web.Controllers
         // GET: Events/Create
         public IActionResult Create()
         {
-            ViewData["CategoryId"] = new SelectList(_context.Category, "Id", "Name");
+            var username = User.Identity.Name;
+            var userid = _context.Clients.Where(a => a.User.Email == username).FirstOrDefault();
+            ViewBag.ClientId = userid.Id;
             ViewData["CityId"] = new SelectList(_context.Cities, "Id", "Name");
+            ViewData["CategoryId"] = new SelectList(_context.Category, "Id", "Name");
             return View();
         }
+
+        public IActionResult CreateEvent()
+        {
+            ViewBag.ClientId = _context.Clients.Include(u => u.User).ToList();
+            ViewData["CityId"] = new SelectList(_context.Cities, "Id", "Name");
+            ViewData["CategoryId"] = new SelectList(_context.Category, "Id", "Name");
+            return View();
+        }
+
 
         // POST: Events/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,EventDate,Desciption,Picture,People,Duration,CityId,CategoryId")] Event @event)
+        public async Task<IActionResult> Create(Event @event)
         {
             if (ModelState.IsValid)
             {
@@ -67,7 +81,6 @@ namespace EventosTec.Web.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryId"] = new SelectList(_context.Category, "Id", "Name", @event.CategoryId);
             ViewData["CityId"] = new SelectList(_context.Cities, "Id", "Name", @event.CityId);
             return View(@event);
         }
@@ -85,7 +98,6 @@ namespace EventosTec.Web.Controllers
             {
                 return NotFound();
             }
-            ViewData["CategoryId"] = new SelectList(_context.Category, "Id", "Name", @event.CategoryId);
             ViewData["CityId"] = new SelectList(_context.Cities, "Id", "Name", @event.CityId);
             return View(@event);
         }
@@ -95,7 +107,7 @@ namespace EventosTec.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,EventDate,Desciption,Picture,People,Duration,CityId,CategoryId")] Event @event)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,EventDate,Description,Picture,People,Duration,CityId")] Event @event)
         {
             if (id != @event.Id)
             {
@@ -122,7 +134,6 @@ namespace EventosTec.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryId"] = new SelectList(_context.Category, "Id", "Name", @event.CategoryId);
             ViewData["CityId"] = new SelectList(_context.Cities, "Id", "Name", @event.CityId);
             return View(@event);
         }
@@ -136,7 +147,6 @@ namespace EventosTec.Web.Controllers
             }
 
             var @event = await _context.Events
-                .Include(a => a.Category)
                 .Include(a => a.City)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (@event == null)

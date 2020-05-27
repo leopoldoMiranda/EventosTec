@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace EventosTec.Web.Controllers
 {
-    [Authorize]//AGREGADO
+    [Authorize]
     public class CategoriesController : Controller
     {
         private readonly DataDbContext _context;
@@ -24,7 +24,9 @@ namespace EventosTec.Web.Controllers
         // GET: Categories
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Category.Include(e => e.Events).ToListAsync());//AGREGADO
+            // return View(await _context.Category.Include(e => e.Events).ToListAsync());
+            var categories = await _context.Category.Include(e => e.Events).ToListAsync();
+            return View(categories);
         }
 
         // GET: Categories/Details/5
@@ -56,7 +58,7 @@ namespace EventosTec.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Descripcion")] Category category)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description")] Category category)
         {
             if (ModelState.IsValid)
             {
@@ -88,7 +90,7 @@ namespace EventosTec.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Descripcion")] Category category)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description")] Category category)
         {
             if (id != category.Id)
             {

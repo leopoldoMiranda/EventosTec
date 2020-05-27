@@ -1,16 +1,16 @@
 ﻿@model EventosTec.Web.Models.Entities.Event
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "CreateEvent";
 }
 
-<h2>Create</h2>
+<h2>CreateEvent</h2>
 
 <h4>Event</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="CreateEvent">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
@@ -48,13 +48,19 @@
             </div>
             <div class="form-group">
                 <label asp-for="ClientId" class="control-label"></label>
-                <input asp-for="ClientId" class="form-control" value="@ViewBag.ClientId" />
+                <select name="ClienteId" class="form-control">
+                    <option>Elige un Cliente</option>
+                    @foreach (var item in ViewBag.ClientId)
+                    {
+                        <option value="@item.Id">@item.User.UserName</option>
+                    }
+
+                </select>
             </div>
             <div class="form-group">
                 <label asp-for="CategoryId" class="control-label"></label>
                 <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId"></select>
             </div>
-
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-default" />
             </div>
@@ -63,9 +69,5 @@
 </div>
 
 <div>
-    <a asp-action="Index">Regresar</a>
+    <a asp-action="Index">Back to List</a>
 </div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
